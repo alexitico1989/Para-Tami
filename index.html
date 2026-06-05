@@ -3,340 +3,595 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Para Tami 🌼</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Para Tami</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
 
 <style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    overflow:hidden;
-    background:
-    radial-gradient(circle at top,#31456a 0%,#17233c 40%,#0b1220 100%);
-    height:100vh;
-    color:white;
-    font-family:'Cormorant Garamond',serif;
-}
-
-#particles{
-    position:fixed;
-    inset:0;
-    overflow:hidden;
-    pointer-events:none;
+:root {
+  --cream: #faf6f0;
+  --stone: #e8e0d5;
+  --ink: #2a2420;
+  --muted: #8a7e76;
+  --gerbera-coral: #e8714a;
+  --gerbera-yellow: #f2c12e;
+  --gerbera-pink: #e8809a;
+  --gerbera-white: #f5f0e8;
+  --gerbera-orange: #e8953a;
+  --gerbera-lavender: #b89ec4;
 }
 
-.particle{
-    position:absolute;
-    width:4px;
-    height:4px;
-    background:white;
-    border-radius:50%;
-    opacity:.3;
-    animation:float 15s linear infinite;
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--cream);
+  font-family: 'Jost', sans-serif;
+  color: var(--ink);
 }
 
-@keyframes float{
-    from{
-        transform:translateY(100vh);
-    }
-    to{
-        transform:translateY(-100px);
-    }
+/* ── NOISE TEXTURE OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
 }
 
-.scene{
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:30px;
-    opacity:0;
-    pointer-events:none;
-    transition:1.2s;
+/* ── SCENES ── */
+.scene {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+.scene.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.scene.active{
-    opacity:1;
-    pointer-events:auto;
+/* ── TYPOGRAPHY ── */
+.heading {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 20px;
+}
+.heading em {
+  font-style: italic;
+  color: var(--gerbera-coral);
 }
 
-.title{
-    font-family:'Great Vibes',cursive;
-    font-size:4rem;
-    margin-bottom:20px;
+.body-text {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  line-height: 1.85;
+  color: var(--muted);
+  text-align: center;
+  max-width: 520px;
 }
 
-.text{
-    max-width:700px;
-    font-size:1.5rem;
-    line-height:1.7;
+/* ── BUTTON ── */
+.btn {
+  margin-top: 36px;
+  padding: 12px 34px;
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+  z-index: 0;
+}
+.btn:hover::before { transform: scaleX(1); }
+.btn:hover { color: var(--cream); }
+.btn span { position: relative; z-index: 1; }
+
+/* ── DECORATIVE LINE ── */
+.deco-line {
+  width: 40px;
+  height: 1.5px;
+  background: var(--stone);
+  margin: 0 auto 28px;
 }
 
-.btn{
-    margin-top:35px;
-    padding:14px 32px;
-    border:none;
-    border-radius:40px;
-    cursor:pointer;
-    font-size:1.1rem;
-    background:white;
-    color:#14213d;
-    transition:.3s;
+/* ── SCENE 1: Single large gerbera ── */
+#scene1 .gerbera-wrap {
+  margin-bottom: 32px;
+  animation: float-gentle 6s ease-in-out infinite;
+}
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
 }
 
-.btn:hover{
-    transform:scale(1.05);
+/* ── SCENE 4: Garden of gerberas ── */
+.garden {
+  display: flex;
+  gap: clamp(12px, 4vw, 30px);
+  align-items: flex-end;
+  margin: 28px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.garden-flower {
+  animation: stem-sway 5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+.garden-flower:nth-child(1) { animation-delay: 0s; }
+.garden-flower:nth-child(2) { animation-delay: 0.8s; }
+.garden-flower:nth-child(3) { animation-delay: 1.6s; }
+.garden-flower:nth-child(4) { animation-delay: 0.4s; }
+.garden-flower:nth-child(5) { animation-delay: 1.2s; }
+
+@keyframes stem-sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
 }
 
-.flower{
-    position:relative;
-    width:180px;
-    height:180px;
-    margin-bottom:30px;
-    animation:sway 5s ease-in-out infinite;
+/* ── REVEAL TEXT ── */
+.reveal-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  color: var(--gerbera-coral);
+  text-align: center;
+  max-width: 440px;
+  margin-top: 20px;
+  line-height: 1.7;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+.reveal-text.shown {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes sway{
-    0%,100%{
-        transform:rotate(-2deg);
-    }
-    50%{
-        transform:rotate(2deg);
-    }
+/* ── SCENE ENTER ANIMATIONS ── */
+.scene.active .heading,
+.scene.active .body-text,
+.scene.active .btn,
+.scene.active .deco-line,
+.scene.active .gerbera-wrap,
+.scene.active .garden,
+.scene.active .signature {
+  animation: rise 0.9s ease both;
+}
+.scene.active .gerbera-wrap { animation-delay: 0s; }
+.scene.active .heading       { animation-delay: 0.15s; }
+.scene.active .deco-line     { animation-delay: 0.25s; }
+.scene.active .body-text     { animation-delay: 0.3s; }
+.scene.active .garden        { animation-delay: 0.2s; }
+.scene.active .btn           { animation-delay: 0.45s; }
+.scene.active .signature     { animation-delay: 0.55s; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.petal{
-    position:absolute;
-    width:50px;
-    height:90px;
-    background:#ff8fab;
-    border-radius:50%;
-    left:65px;
-    top:15px;
-    transform-origin:25px 75px;
+/* ── SIGNATURE ── */
+.signature {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--muted);
+  margin-top: 8px;
+  letter-spacing: 0.05em;
 }
 
-.center{
-    position:absolute;
-    width:55px;
-    height:55px;
-    background:#ffd166;
-    border-radius:50%;
-    left:62px;
-    top:62px;
-    z-index:2;
+/* ── HORIZONTAL RULE ── */
+hr.thin {
+  border: none;
+  border-top: 1px solid var(--stone);
+  width: 60px;
+  margin: 18px auto;
 }
 
-.garden{
-    position:absolute;
-    bottom:-20px;
-    width:100%;
-    display:flex;
-    justify-content:center;
-    gap:30px;
+/* ── SCENE 1 background accent ── */
+#scene1::before {
+  content: '';
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f2c12e14 0%, transparent 70%);
+  pointer-events: none;
 }
-
-.smallFlower{
-    font-size:50px;
-    animation:move 4s ease-in-out infinite;
-}
-
-.smallFlower:nth-child(2){
-    animation-delay:1s;
-}
-.smallFlower:nth-child(3){
-    animation-delay:2s;
-}
-.smallFlower:nth-child(4){
-    animation-delay:3s;
-}
-
-@keyframes move{
-    0%,100%{
-        transform:translateY(0px);
-    }
-    50%{
-        transform:translateY(-10px);
-    }
-}
-
-#secret{
-    display:none;
-    margin-top:25px;
-    font-size:1.3rem;
-    color:#ffeaa7;
-}
-
-.fadeIn{
-    animation:appear 2s forwards;
-}
-
-@keyframes appear{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
 </style>
 </head>
 
 <body>
 
-<div id="particles"></div>
-
-<!-- ESCENA 1 -->
-
+<!-- ════════════════════════════════
+     ESCENA 1 — Apertura
+═════════════════════════════════ -->
 <div class="scene active" id="scene1">
 
-<div class="flower">
-<div class="center"></div>
+  <div class="gerbera-wrap">
+    <!-- GERBERA CORAL GRANDE -->
+    <svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="center1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3a2a1a"/>
+          <stop offset="60%" stop-color="#2a1a0a"/>
+          <stop offset="100%" stop-color="#1a0f05"/>
+        </radialGradient>
+        <radialGradient id="innercircle1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#5a3a20"/>
+          <stop offset="100%" stop-color="#3a2010"/>
+        </radialGradient>
+      </defs>
+      <!-- Petals outer layer -->
+      <g transform="translate(80,80)">
+        <!-- 24 thin outer petals -->
+        <g id="outer-petals-coral">
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(0) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(15) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(30) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(45) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(60) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(75) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(90) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(105) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(120) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(135) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(150) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(165) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(180) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(195) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(210) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(225) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(240) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(255) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(270) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(285) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(300) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(315) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(330) translate(0,-54)"/>
+          <ellipse rx="7" ry="34" fill="#e8714a" opacity="0.55" transform="rotate(345) translate(0,-54)"/>
+        </g>
+        <!-- 12 main petals -->
+        <g id="main-petals-coral">
+          <ellipse rx="10" ry="38" fill="#e8714a" transform="rotate(0) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#dc6040" transform="rotate(30) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#e8714a" transform="rotate(60) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#dc6040" transform="rotate(90) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#e8714a" transform="rotate(120) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#dc6040" transform="rotate(150) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#e8714a" transform="rotate(180) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#dc6040" transform="rotate(210) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#e8714a" transform="rotate(240) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#dc6040" transform="rotate(270) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#e8714a" transform="rotate(300) translate(0,-38)"/>
+          <ellipse rx="10" ry="38" fill="#dc6040" transform="rotate(330) translate(0,-38)"/>
+        </g>
+        <!-- Inner transition ring -->
+        <circle r="22" fill="#c85030" opacity="0.4"/>
+        <!-- Dark disc center -->
+        <circle r="18" fill="url(#center1)"/>
+        <!-- Textured dots on center -->
+        <circle r="13" fill="url(#innercircle1)"/>
+        <circle cx="-4" cy="-5" r="1.5" fill="#6a4020" opacity="0.7"/>
+        <circle cx="3" cy="-6" r="1.5" fill="#6a4020" opacity="0.7"/>
+        <circle cx="6" cy="2" r="1.5" fill="#6a4020" opacity="0.7"/>
+        <circle cx="-1" cy="5" r="1.5" fill="#6a4020" opacity="0.7"/>
+        <circle cx="-6" cy="1" r="1.5" fill="#6a4020" opacity="0.7"/>
+        <circle cx="0" cy="-1" r="2" fill="#7a5030" opacity="0.5"/>
+      </g>
+    </svg>
+  </div>
+
+  <h1 class="heading">Hola, <em>Tami</em></h1>
+  <div class="deco-line"></div>
+  <p class="body-text">Hay algo que no olvidé de ti...</p>
+  <button class="btn" onclick="goTo(2)"><span>Continuar</span></button>
 </div>
 
-<h1 class="title">Hola Tami 🌼</h1>
 
-<p class="text">
-Hay algo que recordé de ti...
-</p>
-
-<button class="btn" onclick="nextScene(1)">
-Continuar
-</button>
-
-</div>
-
-<!-- ESCENA 2 -->
-
+<!-- ════════════════════════════════
+     ESCENA 2 — La memoria
+═════════════════════════════════ -->
 <div class="scene" id="scene2">
-
-<h1 class="title">Una pequeña memoria</h1>
-
-<p class="text">
-Hace un tiempo me dijiste que tus flores favoritas eran las gerberas.
-<br><br>
-Y aunque parezca un detalle pequeño...
-yo no lo olvidé.
-</p>
-
-<button class="btn" onclick="nextScene(2)">
-Seguir
-</button>
-
+  <h1 class="heading">Una <em>pequeña</em> memoria</h1>
+  <div class="deco-line"></div>
+  <p class="body-text">
+    Me dijiste una vez que tus flores favoritas eran las gerberas y Margaritas<br><br>
+    Parece un detalle menor.<br>
+    Pero esas cosas se quedan.
+  </p>
+  <button class="btn" onclick="goTo(3)"><span>Seguir</span></button>
 </div>
 
-<!-- ESCENA 3 -->
 
+<!-- ════════════════════════════════
+     ESCENA 3 — La intención
+═════════════════════════════════ -->
 <div class="scene" id="scene3">
-
-<h1 class="title">Entonces pensé...</h1>
-
-<p class="text">
-Que aunque hoy no pueda entregarte unas de verdad,
-podía hacer algo distinto.
-<br><br>
-Algo sencillo.
-<br>
-Algo hecho especialmente para ti.
-</p>
-
-<button class="btn" onclick="nextScene(3)">
-Ver
-</button>
-
+  <h1 class="heading">Entonces <em>hice esto</em></h1>
+  <div class="deco-line"></div>
+  <p class="body-text">
+    No puedo entregarte unas de verdad desde aquí.<br>
+    Pero puedo hacer algo hecho especialmente para ti,<br>
+    desde la distancia.
+  </p>
+  <button class="btn" onclick="goTo(4)"><span>Ver</span></button>
 </div>
 
-<!-- ESCENA 4 -->
 
+<!-- ════════════════════════════════
+     ESCENA 4 — El jardín
+═════════════════════════════════ -->
 <div class="scene" id="scene4">
+  <h1 class="heading">Un jardín <em>para ti</em></h1>
+  <div class="deco-line"></div>
 
-<h1 class="title">Un jardín para ti 🌼</h1>
+  <!-- Garden of 5 gerberas, different colors, different sizes -->
+  <div class="garden">
 
-<p class="text">
-Espero que tu noche sea tranquila,
-que la peque siga mejorando,
-y que encuentres aunque sea un pequeño motivo para sonreír hoy.
-</p>
+    <!-- 1. Amarilla — pequeña -->
+    <svg class="garden-flower" width="72" height="110" viewBox="0 0 72 110">
+      <line x1="36" y1="110" x2="36" y2="52" stroke="#7a9a5a" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="28" cy="78" rx="10" ry="5" fill="#7a9a5a" opacity="0.6" transform="rotate(-20,28,78)"/>
+      <g transform="translate(36,46)">
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(0) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(30) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(60) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(90) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(120) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(150) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(180) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(210) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(240) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(270) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(300) translate(0,-20)"/>
+        <ellipse rx="5" ry="20" fill="#f2c12e" opacity="0.6" transform="rotate(330) translate(0,-20)"/>
+        <ellipse rx="6" ry="22" fill="#f2c12e" transform="rotate(0) translate(0,-18)"/>
+        <ellipse rx="6" ry="22" fill="#e8b420" transform="rotate(45) translate(0,-18)"/>
+        <ellipse rx="6" ry="22" fill="#f2c12e" transform="rotate(90) translate(0,-18)"/>
+        <ellipse rx="6" ry="22" fill="#e8b420" transform="rotate(135) translate(0,-18)"/>
+        <ellipse rx="6" ry="22" fill="#f2c12e" transform="rotate(180) translate(0,-18)"/>
+        <ellipse rx="6" ry="22" fill="#e8b420" transform="rotate(225) translate(0,-18)"/>
+        <ellipse rx="6" ry="22" fill="#f2c12e" transform="rotate(270) translate(0,-18)"/>
+        <ellipse rx="6" ry="22" fill="#e8b420" transform="rotate(315) translate(0,-18)"/>
+        <circle r="10" fill="#2a1a08"/><circle r="7" fill="#3a2510"/>
+        <circle cx="-2" cy="-2" r="1" fill="#5a3a18" opacity="0.8"/>
+        <circle cx="2" cy="1" r="1" fill="#5a3a18" opacity="0.8"/>
+        <circle cx="-1" cy="3" r="1" fill="#5a3a18" opacity="0.8"/>
+      </g>
+    </svg>
 
-<div class="garden">
-<div class="smallFlower">🌼</div>
-<div class="smallFlower">🌼</div>
-<div class="smallFlower">🌼</div>
-<div class="smallFlower">🌼</div>
-</div>
+    <!-- 2. Rosa — grande -->
+    <svg class="garden-flower" width="96" height="140" viewBox="0 0 96 140">
+      <line x1="48" y1="140" x2="48" y2="68" stroke="#7a9a5a" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="62" cy="108" rx="13" ry="6" fill="#7a9a5a" opacity="0.6" transform="rotate(20,62,108)"/>
+      <g transform="translate(48,60)">
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(0) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(18) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(36) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(54) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(72) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(90) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(108) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(126) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(144) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(162) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(180) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(198) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(216) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(234) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(252) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(270) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(288) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(306) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(324) translate(0,-26)"/>
+        <ellipse rx="6" ry="26" fill="#e8809a" opacity="0.55" transform="rotate(342) translate(0,-26)"/>
+        <ellipse rx="8" ry="30" fill="#e8809a" transform="rotate(0) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#d87090" transform="rotate(30) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#e8809a" transform="rotate(60) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#d87090" transform="rotate(90) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#e8809a" transform="rotate(120) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#d87090" transform="rotate(150) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#e8809a" transform="rotate(180) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#d87090" transform="rotate(210) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#e8809a" transform="rotate(240) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#d87090" transform="rotate(270) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#e8809a" transform="rotate(300) translate(0,-24)"/>
+        <ellipse rx="8" ry="30" fill="#d87090" transform="rotate(330) translate(0,-24)"/>
+        <circle r="15" fill="#c06070" opacity="0.4"/>
+        <circle r="12" fill="#2a1a0a"/>
+        <circle r="9" fill="#3a2010"/>
+        <circle cx="-3" cy="-3" r="1.5" fill="#5a3218" opacity="0.8"/>
+        <circle cx="3" cy="-2" r="1.5" fill="#5a3218" opacity="0.8"/>
+        <circle cx="2" cy="4" r="1.5" fill="#5a3218" opacity="0.8"/>
+        <circle cx="-2" cy="4" r="1.5" fill="#5a3218" opacity="0.8"/>
+      </g>
+    </svg>
 
-<button class="btn" onclick="showSecret()">
-🌼 ¿Por qué gerberas?
-</button>
+    <!-- 3. Coral — mediana alta -->
+    <svg class="garden-flower" width="84" height="148" viewBox="0 0 84 148">
+      <line x1="42" y1="148" x2="42" y2="65" stroke="#6a8a4a" stroke-width="2.8" stroke-linecap="round"/>
+      <ellipse cx="30" cy="115" rx="12" ry="5" fill="#6a8a4a" opacity="0.6" transform="rotate(-25,30,115)"/>
+      <g transform="translate(42,57)">
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(0) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(20) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(40) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(60) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(80) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(100) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(120) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(140) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(160) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(180) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(200) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(220) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(240) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(260) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(280) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(300) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(320) translate(0,-25)"/>
+        <ellipse rx="6" ry="25" fill="#e8714a" opacity="0.55" transform="rotate(340) translate(0,-25)"/>
+        <ellipse rx="8" ry="28" fill="#e8714a" transform="rotate(10) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#d86040" transform="rotate(40) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#e8714a" transform="rotate(70) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#d86040" transform="rotate(100) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#e8714a" transform="rotate(130) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#d86040" transform="rotate(160) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#e8714a" transform="rotate(190) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#d86040" transform="rotate(220) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#e8714a" transform="rotate(250) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#d86040" transform="rotate(280) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#e8714a" transform="rotate(310) translate(0,-22)"/>
+        <ellipse rx="8" ry="28" fill="#d86040" transform="rotate(340) translate(0,-22)"/>
+        <circle r="13" fill="#b85030" opacity="0.4"/>
+        <circle r="10" fill="#2a1a08"/>
+        <circle r="7" fill="#3a2510"/>
+        <circle cx="-2" cy="-2" r="1.2" fill="#5a3518" opacity="0.8"/>
+        <circle cx="2.5" cy="0" r="1.2" fill="#5a3518" opacity="0.8"/>
+        <circle cx="0" cy="3" r="1.2" fill="#5a3518" opacity="0.8"/>
+        <circle cx="-2.5" cy="2" r="1.2" fill="#5a3518" opacity="0.8"/>
+      </g>
+    </svg>
 
-<div id="secret">
-Porque las personas importantes suelen quedarse
-en los detalles pequeños...
-y yo recordé éste.
-<br><br>
-❤️ Alexis
-</div>
+    <!-- 4. Naranja — mediana -->
+    <svg class="garden-flower" width="78" height="120" viewBox="0 0 78 120">
+      <line x1="39" y1="120" x2="39" y2="55" stroke="#7a9a5a" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="52" cy="90" rx="11" ry="5" fill="#7a9a5a" opacity="0.6" transform="rotate(18,52,90)"/>
+      <g transform="translate(39,48)">
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(0) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(22.5) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(45) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(67.5) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(90) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(112.5) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(135) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(157.5) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(180) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(202.5) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(225) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(247.5) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(270) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(292.5) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(315) translate(0,-22)"/>
+        <ellipse rx="5" ry="22" fill="#e8953a" opacity="0.55" transform="rotate(337.5) translate(0,-22)"/>
+        <ellipse rx="7" ry="24" fill="#e8953a" transform="rotate(0) translate(0,-20)"/>
+        <ellipse rx="7" ry="24" fill="#d88028" transform="rotate(45) translate(0,-20)"/>
+        <ellipse rx="7" ry="24" fill="#e8953a" transform="rotate(90) translate(0,-20)"/>
+        <ellipse rx="7" ry="24" fill="#d88028" transform="rotate(135) translate(0,-20)"/>
+        <ellipse rx="7" ry="24" fill="#e8953a" transform="rotate(180) translate(0,-20)"/>
+        <ellipse rx="7" ry="24" fill="#d88028" transform="rotate(225) translate(0,-20)"/>
+        <ellipse rx="7" ry="24" fill="#e8953a" transform="rotate(270) translate(0,-20)"/>
+        <ellipse rx="7" ry="24" fill="#d88028" transform="rotate(315) translate(0,-20)"/>
+        <circle r="11" fill="#c07020" opacity="0.4"/>
+        <circle r="9" fill="#2a1808"/>
+        <circle r="6" fill="#3a2210"/>
+        <circle cx="-2" cy="-2" r="1.1" fill="#5a3015" opacity="0.8"/>
+        <circle cx="2" cy="0" r="1.1" fill="#5a3015" opacity="0.8"/>
+        <circle cx="0" cy="2.5" r="1.1" fill="#5a3015" opacity="0.8"/>
+      </g>
+    </svg>
+
+    <!-- 5. Lila/lavanda — pequeña -->
+    <svg class="garden-flower" width="68" height="105" viewBox="0 0 68 105">
+      <line x1="34" y1="105" x2="34" y2="50" stroke="#7a9a5a" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="24" cy="78" rx="9" ry="4" fill="#7a9a5a" opacity="0.6" transform="rotate(-22,24,78)"/>
+      <g transform="translate(34,44)">
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(0) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(24) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(48) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(72) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(96) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(120) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(144) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(168) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(192) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(216) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(240) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(264) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(288) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(312) translate(0,-19)"/>
+        <ellipse rx="5" ry="19" fill="#b89ec4" opacity="0.55" transform="rotate(336) translate(0,-19)"/>
+        <ellipse rx="6" ry="21" fill="#b89ec4" transform="rotate(0) translate(0,-17)"/>
+        <ellipse rx="6" ry="21" fill="#a88eb4" transform="rotate(60) translate(0,-17)"/>
+        <ellipse rx="6" ry="21" fill="#b89ec4" transform="rotate(120) translate(0,-17)"/>
+        <ellipse rx="6" ry="21" fill="#a88eb4" transform="rotate(180) translate(0,-17)"/>
+        <ellipse rx="6" ry="21" fill="#b89ec4" transform="rotate(240) translate(0,-17)"/>
+        <ellipse rx="6" ry="21" fill="#a88eb4" transform="rotate(300) translate(0,-17)"/>
+        <circle r="9" fill="#2a1a08"/>
+        <circle r="7" fill="#3a2510"/>
+        <circle cx="-2" cy="-2" r="1" fill="#5a3018" opacity="0.8"/>
+        <circle cx="2" cy="1" r="1" fill="#5a3018" opacity="0.8"/>
+        <circle cx="-1" cy="2.5" r="1" fill="#5a3018" opacity="0.8"/>
+      </g>
+    </svg>
+
+  </div>
+
+  <p class="body-text" style="max-width:440px; font-size:1rem;">
+    Que tu noche sea tranquila,<br>
+    Y sigas soñando lindo,<br>
+    y que encuentres un motivo para sonreír hoy.
+  </p>
+
+  <button class="btn" onclick="showSecret()" id="secret-btn"><span>¿Por qué gerberas?</span></button>
+
+  <p class="reveal-text" id="reveal">
+    Porque las personas que importan<br>se quedan en los detalles.<br>
+    <span style="font-size:0.9rem; color:var(--muted); font-family:'Jost', sans-serif; font-weight:300; font-style:normal;">— Alexis</span>
+  </p>
 
 </div>
 
 <script>
+  let current = 1;
 
-for(let i=0;i<80;i++){
+  function goTo(next) {
+    const curr = document.getElementById('scene' + current);
+    const nextEl = document.getElementById('scene' + next);
+    curr.classList.remove('active');
+    setTimeout(() => {
+      nextEl.classList.add('active');
+      current = next;
+    }, 600);
+  }
 
-    const p=document.createElement('div');
-    p.className='particle';
-
-    p.style.left=Math.random()*100+'vw';
-    p.style.animationDuration=(10+Math.random()*15)+'s';
-    p.style.opacity=Math.random()*0.5;
-
-    document.getElementById('particles').appendChild(p);
-}
-
-for(let i=0;i<12;i++){
-
-    const petal=document.createElement('div');
-
-    petal.className='petal';
-
-    petal.style.transform=
-    `rotate(${i*30}deg)`;
-
-    document.querySelector('.flower').appendChild(petal);
-}
-
-function nextScene(num){
-
-    document
-    .getElementById('scene'+num)
-    .classList.remove('active');
-
-    document
-    .getElementById('scene'+(num+1))
-    .classList.add('active');
-}
-
-function showSecret(){
-
-    const secret=document.getElementById('secret');
-
-    secret.style.display='block';
-    secret.classList.add('fadeIn');
-}
-
+  function showSecret() {
+    const reveal = document.getElementById('reveal');
+    const btn = document.getElementById('secret-btn');
+    reveal.classList.add('shown');
+    btn.style.display = 'none';
+  }
 </script>
 
 </body>
