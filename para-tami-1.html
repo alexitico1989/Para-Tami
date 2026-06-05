@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Tami</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400;1,500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#faf6ef;
+  --ink:#26201a;
+  --muted:#9a8e84;
+  --stone:#e4dcd2;
+  --accent:#d4621e;
+}
+html,body{
+  height:100%;
+  overflow:hidden;
+  background:var(--cream);
+  font-family:'Jost',sans-serif;
+  color:var(--ink);
+}
+
+/* ── LLUVIA ── */
+#rain-layer{
+  position:fixed;inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+}
+.rain-flower{
+  position:absolute;
+  top:-80px;
+  animation: fall linear infinite;
+  will-change: transform;
+}
+@keyframes fall{
+  0%  { transform: translateY(-80px) rotate(0deg); }
+  100%{ transform: translateY(110vh)  rotate(360deg); }
+}
+
+/* ── SCENES ── */
+.scene{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 28px;
+  opacity:0;pointer-events:none;
+  transition:opacity 1s ease;
+  z-index:10;
+}
+.scene.active{opacity:1;pointer-events:auto}
+
+/* ── TYPE ── */
+.heading{
+  font-family:'Playfair Display',serif;
+  font-weight:400;
+  font-size:clamp(1.9rem,5.5vw,3rem);
+  line-height:1.15;text-align:center;
+  margin-bottom:14px;color:var(--ink);
+}
+.heading em{font-style:italic;color:var(--accent)}
+
+.sub{
+  font-family:'Jost',sans-serif;font-weight:300;
+  font-size:clamp(0.95rem,2.2vw,1.1rem);
+  line-height:1.9;color:var(--muted);
+  text-align:center;max-width:480px;
+}
+.deco{width:36px;height:1.5px;background:var(--stone);margin:0 auto 20px}
+
+/* ── BUTTON ── */
+.btn{
+  margin-top:28px;
+  padding:11px 26px;
+  background:transparent;
+  border:1.5px solid var(--ink);
+  font-family:'Jost',sans-serif;font-weight:300;
+  font-size:0.78rem;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--ink);
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:color 0.3s;display:inline-block;
+}
+.btn::before{
+  content:'';position:absolute;inset:0;
+  background:var(--ink);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.32s ease;
+}
+.btn:hover::before{transform:scaleX(1)}
+.btn:hover{color:var(--cream)}
+.btn span{position:relative;z-index:1}
+
+/* ── STAGGER ENTER ── */
+.scene.active .heading {animation:rise .8s .10s both}
+.scene.active .deco    {animation:rise .8s .04s both}
+.scene.active .sub     {animation:rise .8s .22s both}
+.scene.active .btn     {animation:rise .8s .36s both}
+.scene.active .hero    {animation:rise .9s 0s   both}
+.scene.active .garden  {animation:rise .9s .14s both}
+.scene.active .reveal  {animation:rise .9s .48s both}
+@keyframes rise{
+  from{opacity:0;transform:translateY(16px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+/* ── HERO ── */
+.hero{
+  margin-bottom:24px;
+  animation:sway 7s ease-in-out infinite;
+  transform-origin:center 90%;
+}
+@keyframes sway{
+  0%,100%{transform:rotate(-1.5deg)}
+  50%    {transform:rotate( 1.5deg)}
+}
+
+/* ── GARDEN ── */
+.garden{
+  display:flex;gap:clamp(6px,2vw,18px);
+  align-items:flex-end;
+  margin:16px 0 6px;
+  flex-wrap:nowrap;
+  justify-content:center;
+}
+.gf{
+  transform-origin:bottom center;
+  animation:gsway 5s ease-in-out infinite;
+}
+.gf:nth-child(1){animation-delay:0s}
+.gf:nth-child(2){animation-delay:.65s}
+.gf:nth-child(3){animation-delay:1.3s}
+.gf:nth-child(4){animation-delay:.32s}
+.gf:nth-child(5){animation-delay:1.0s}
+.gf:nth-child(6){animation-delay:.5s}
+@keyframes gsway{
+  0%,100%{transform:rotate(-2.5deg)}
+  50%    {transform:rotate( 2.5deg)}
+}
+
+/* ── REVEAL ── */
+.reveal{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(1rem,2.3vw,1.15rem);
+  color:var(--accent);text-align:center;
+  max-width:380px;line-height:1.8;
+  opacity:0;transform:translateY(10px);
+  transition:opacity 1s ease,transform 1s ease;
+  margin-top:16px;
+}
+.reveal.show{opacity:1;transform:translateY(0)}
+.reveal .sig{
+  display:block;margin-top:10px;
+  font-family:'Jost',sans-serif;
+  font-style:normal;font-weight:300;
+  font-size:0.82rem;color:var(--muted);
+  letter-spacing:0.1em;
+}
+</style>
+</head>
+<body>
+
+<!-- ── RAIN ── -->
+<div id="rain-layer"></div>
+
+<!-- SCENE 1 -->
+<div class="scene active" id="s1">
+  <div class="hero" id="heroEl"></div>
+  <h1 class="heading">Hola, <em>Tami</em></h1>
+  <div class="deco"></div>
+  <p class="sub">Hay algo que no olvidé de ti...</p>
+  <button class="btn" onclick="goTo(1,2)"><span>Continuar</span></button>
+</div>
+
+<!-- SCENE 2 -->
+<div class="scene" id="s2">
+  <h1 class="heading">Una <em>pequeña</em> memoria</h1>
+  <div class="deco"></div>
+  <p class="sub">
+    Me dijiste que tus flores favoritas eran<br>las gerberas y las margaritas.<br><br>
+    Parece un detalle menor.<br>Pero esas cosas se quedan.
+  </p>
+  <button class="btn" onclick="goTo(2,3)"><span>Seguir</span></button>
+</div>
+
+<!-- SCENE 3 -->
+<div class="scene" id="s3">
+  <h1 class="heading">Entonces <em>hice esto</em></h1>
+  <div class="deco"></div>
+  <p class="sub">
+    No puedo entregarte unas de verdad desde aquí.<br>
+    Pero puedo hacer algo especialmente para ti,<br>
+    desde la distancia.
+  </p>
+  <button class="btn" onclick="goTo(3,4)"><span>Ver</span></button>
+</div>
+
+<!-- SCENE 4 -->
+<div class="scene" id="s4">
+  <h1 class="heading">Un jardín <em>para ti</em></h1>
+  <div class="deco"></div>
+  <div class="garden" id="gardenEl"></div>
+  <p class="sub" style="font-size:.92rem;max-width:380px;margin-top:4px">
+    Que tu noche sea tranquila,<br>
+    que sigas soñando lindo,<br>
+    y que encuentres un motivo para sonreír hoy.
+  </p>
+  <button class="btn" id="secretBtn" onclick="showReveal()">
+    <span>¿Por qué gerberas y margaritas?</span>
+  </button>
+  <p class="reveal" id="revealEl">
+    Porque las personas que importan<br>se quedan en los detalles.
+    <span class="sig">— Alexis</span>
+  </p>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   SVG BUILDERS — puro inline, sin canvas,
+   sin blobs. Funciona en Safari iOS/Android.
+═══════════════════════════════════════════ */
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function el(tag, attrs){
+  const e = document.createElementNS(SVG_NS, tag);
+  for(const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+  return e;
+}
+
+/* ── GERBERA ──────────────────────────────
+   petalColor: color principal
+   petalDark:  color alterno / sombra
+   size: diámetro total del SVG
+*/
+function makeGerbera(size, petalColor, petalDark){
+  const R = size / 2;
+  const svg = el('svg',{
+    width:size, height:size,
+    viewBox:`${-R} ${-R} ${size} ${size}`,
+    xmlns:SVG_NS
+  });
+
+  const outerCount = 20;
+  const outerRad   = R * 0.90;
+  const innerStart = R * 0.22;
+  const pw         = R * 0.13;   // semi-minor (petal width)
+
+  // Outer petals — ellipses rotated around center
+  for(let i = 0; i < outerCount; i++){
+    const angle = (360 / outerCount) * i;
+    const midR  = (outerRad + innerStart) / 2;
+    const halfH = (outerRad - innerStart) / 2;
+    const g = el('ellipse',{
+      cx: 0, cy: -(midR),
+      rx: pw, ry: halfH,
+      fill: i % 2 === 0 ? petalColor : petalDark,
+      opacity: 0.9,
+      transform: `rotate(${angle})`
+    });
+    svg.appendChild(g);
+  }
+
+  // Inner shorter petals (offset half-step)
+  const innerCount = 12;
+  const innerOuter = R * 0.58;
+  const innerIn    = R * 0.22;
+  const ipw        = R * 0.09;
+  for(let i = 0; i < innerCount; i++){
+    const angle = (360 / innerCount) * i + (360/outerCount/2);
+    const midR  = (innerOuter + innerIn) / 2;
+    const halfH = (innerOuter - innerIn) / 2;
+    const g = el('ellipse',{
+      cx: 0, cy: -(midR),
+      rx: ipw, ry: halfH,
+      fill: petalDark,
+      opacity: 0.68,
+      transform: `rotate(${angle})`
+    });
+    svg.appendChild(g);
+  }
+
+  // Center glow ring
+  svg.appendChild(el('circle',{r: R*0.22, fill: petalDark, opacity:0.25}));
+  // Dark disc
+  svg.appendChild(el('circle',{r: R*0.20, fill:'#1e1006'}));
+  svg.appendChild(el('circle',{r: R*0.15, fill:'#2e1a0a'}));
+  svg.appendChild(el('circle',{r: R*0.10, fill:'#3e2410'}));
+  // Texture dots
+  for(let i = 0; i < 10; i++){
+    const a = (360/10)*i * Math.PI/180;
+    const dr = R * 0.11;
+    svg.appendChild(el('circle',{
+      cx:(Math.cos(a)*dr).toFixed(2),
+      cy:(Math.sin(a)*dr).toFixed(2),
+      r: (R*0.023).toFixed(2),
+      fill:'#7a5028', opacity:0.65
+    }));
+  }
+  return svg;
+}
+
+/* ── MARGARITA (daisy) ────────────────────
+   Pétalos blancos/crema, centro dorado
+*/
+function makeDaisy(size){
+  const R = size / 2;
+  const svg = el('svg',{
+    width:size, height:size,
+    viewBox:`${-R} ${-R} ${size} ${size}`,
+    xmlns:SVG_NS
+  });
+
+  const count  = 16;
+  const outerR = R * 0.92;
+  const innerR = R * 0.20;
+  const pw     = R * 0.10;
+
+  for(let i = 0; i < count; i++){
+    const angle = (360 / count) * i;
+    const midR  = (outerR + innerR) / 2;
+    const halfH = (outerR - innerR) / 2;
+    const shade = i % 2 === 0 ? '#f5f0e6' : '#e8e0d0';
+    svg.appendChild(el('ellipse',{
+      cx:0, cy:-(midR),
+      rx:pw, ry:halfH,
+      fill:shade, opacity:0.95,
+      transform:`rotate(${angle})`
+    }));
+  }
+
+  // Yellow center
+  svg.appendChild(el('circle',{r:R*0.21, fill:'#c88008', opacity:0.35}));
+  svg.appendChild(el('circle',{r:R*0.19, fill:'#d49010'}));
+  svg.appendChild(el('circle',{r:R*0.14, fill:'#e8a818'}));
+  svg.appendChild(el('circle',{r:R*0.09, fill:'#f0be28'}));
+  // Dots
+  for(let i = 0; i < 8; i++){
+    const a = (360/8)*i * Math.PI/180;
+    const dr = R * 0.10;
+    svg.appendChild(el('circle',{
+      cx:(Math.cos(a)*dr).toFixed(2),
+      cy:(Math.sin(a)*dr).toFixed(2),
+      r: (R*0.022).toFixed(2),
+      fill:'#5a3a08', opacity:0.55
+    }));
+  }
+  return svg;
+}
+
+/* ── FLOR CON TALLO ───────────────────────
+   Wrapper: SVG flor + SVG tallo alineados
+*/
+function makeFlowerWithStem(flowerSvg, flowerSize, stemH, bendDir){
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+  wrap.appendChild(flowerSvg);
+
+  const W = flowerSize;
+  const cx = W / 2;
+  const bx = cx + bendDir * W * 0.18;
+  const lx = cx + bendDir * W * 0.08;
+
+  const stemSvg = el('svg',{
+    width:W, height:stemH,
+    viewBox:`0 0 ${W} ${stemH}`,
+    xmlns:SVG_NS
+  });
+  // Main stem curve
+  stemSvg.appendChild(el('path',{
+    d:`M${cx} 0 Q${bx} ${stemH*0.5} ${cx} ${stemH}`,
+    stroke:'#7a9a5a', 'stroke-width':2.4, fill:'none', 'stroke-linecap':'round'
+  }));
+  // Leaf
+  const leafX = cx + bendDir * W * 0.12;
+  const leafY = stemH * 0.44;
+  stemSvg.appendChild(el('ellipse',{
+    cx: leafX, cy: leafY,
+    rx:9, ry:4.5,
+    fill:'#7a9a5a', opacity:0.55,
+    transform:`rotate(${bendDir*-24},${leafX},${leafY})`
+  }));
+
+  wrap.appendChild(stemSvg);
+  return wrap;
+}
+
+/* ═══════════════════════════════════════════
+   HERO — gerbera coral grande
+═══════════════════════════════════════════ */
+document.getElementById('heroEl').appendChild(
+  makeGerbera(148, '#e87248', '#c85630')
+);
+
+/* ═══════════════════════════════════════════
+   GARDEN
+═══════════════════════════════════════════ */
+const gardenDefs = [
+  { fn:()=>makeGerbera(66,'#f2c12e','#d8a018'), size:66, stemH:88,  bend:1  },
+  { fn:()=>makeDaisy(70),                       size:70, stemH:96,  bend:-1 },
+  { fn:()=>makeGerbera(78,'#e8809a','#c86080'), size:78, stemH:106, bend:1  },
+  { fn:()=>makeGerbera(74,'#e87248','#c85630'), size:74, stemH:102, bend:-1 },
+  { fn:()=>makeDaisy(62),                       size:62, stemH:84,  bend:1  },
+  { fn:()=>makeGerbera(60,'#b89ec4','#9880aa'), size:60, stemH:80,  bend:-1 },
+];
+
+const gardenEl = document.getElementById('gardenEl');
+gardenDefs.forEach(d => {
+  const gf = document.createElement('div');
+  gf.className = 'gf';
+  gf.appendChild(makeFlowerWithStem(d.fn(), d.size, d.stemH, d.bend));
+  gardenEl.appendChild(gf);
+});
+
+/* ═══════════════════════════════════════════
+   LLUVIA — puro CSS + SVG inline
+   Sin canvas, sin requestAnimationFrame,
+   sin blobs. 100% compatible Safari/iOS.
+═══════════════════════════════════════════ */
+const rainLayer = document.getElementById('rain-layer');
+
+const rainTypes = [
+  ()=>makeGerbera(52,'#e87248','#c85630'),
+  ()=>makeGerbera(44,'#e8809a','#c86080'),
+  ()=>makeGerbera(48,'#f2c12e','#d8a018'),
+  ()=>makeGerbera(40,'#e8953a','#d07020'),
+  ()=>makeGerbera(46,'#b89ec4','#9880aa'),
+  ()=>makeDaisy(44),
+  ()=>makeDaisy(38),
+  ()=>makeDaisy(50),
+];
+
+const DROPS = 32;
+for(let i = 0; i < DROPS; i++){
+  const type   = rainTypes[i % rainTypes.length];
+  const svgEl  = type();
+  const size   = parseInt(svgEl.getAttribute('width'));
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'rain-flower';
+
+  const startX   = Math.random() * 105;    // vw
+  const duration = 8 + Math.random() * 14; // seconds
+  const delay    = -(Math.random() * duration); // start mid-fall
+  const scale    = 0.45 + Math.random() * 0.65;
+  const opacity  = 0.12 + Math.random() * 0.18;
+
+  wrapper.style.cssText = `
+    left:${startX}vw;
+    opacity:${opacity};
+    transform:scale(${scale});
+    transform-origin:center center;
+    animation-duration:${duration}s;
+    animation-delay:${delay}s;
+    margin-left:${-size/2}px;
+  `;
+
+  wrapper.appendChild(svgEl);
+  rainLayer.appendChild(wrapper);
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+let current = 1;
+function goTo(from, to){
+  document.getElementById('s'+from).classList.remove('active');
+  setTimeout(()=>{
+    document.getElementById('s'+to).classList.add('active');
+    current = to;
+  }, 700);
+}
+function showReveal(){
+  document.getElementById('revealEl').classList.add('show');
+  document.getElementById('secretBtn').style.display = 'none';
+}
+</script>
+</body>
+</html>
